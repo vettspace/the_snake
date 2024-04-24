@@ -225,27 +225,28 @@ def draw_world(snake, apple, stones, poisons):
     pg.display.update()
 
 
+def get_uniq_position(game_thing):
+    """Генерирует новую уникальную позицию объектов."""
+    valid_position = False
+    # Пока не будут найдены свободные значения координат
+    while not valid_position:
+        game_thing.randomize_position()
+        if game_thing.position not in occupied_positions:
+            valid_position = True
+            occupied_positions.append(game_thing.position)
+
+
+def create_thing():
+    """Создает 1 камень и 1 яд на игровом поле."""
+    new_stone = Stone()
+    get_uniq_position(new_stone)
+    new_poison = Poison()
+    get_uniq_position(new_poison)
+    return [new_stone], [new_poison]
+
+
 def main():
     """Обновление состояний объектов и логика игры."""
-
-    def get_uniq_position(game_thing):
-        """Генерирует новую уникальную позицию объектов."""
-        valid_position = False
-        # Пока не будут найдены свободные значения координат
-        while not valid_position:
-            game_thing.randomize_position()
-            if game_thing.position not in occupied_positions:
-                valid_position = True
-                occupied_positions.append(game_thing.position)
-
-    def create_thing():
-        """Создает 1 камень и 1 яд на игровом поле."""
-        new_stone = Stone()
-        get_uniq_position(new_stone)
-        new_poison = Poison()
-        get_uniq_position(new_poison)
-        return [new_stone], [new_poison]
-
     pg.init()
     apple = Apple()
     snake = Snake()
