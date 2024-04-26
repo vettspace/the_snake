@@ -121,18 +121,12 @@ class Snake(GameObject):
         """Возвращает позицию головы змейки."""
         return self.positions[0]
 
-    def update_direction(self):
+    def update_direction(self, direction):
         """Обновляет направление движения змейки."""
-        if self.next_direction:
-            self.direction = self.next_direction
-            self.next_direction = None
+        self.direction = direction
 
     def move(self):
         """Обновляет позицию змейки."""
-        if self.next_direction:
-            self.direction = self.next_direction
-            self.next_direction = None
-
         # Получаем новую позицию головы змейки
         new_head = (
             self.get_head_position()[0] + self.direction[0] * GRID_SIZE,
@@ -179,26 +173,25 @@ class Snake(GameObject):
         self.length = 1
         self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
         self.direction = RIGHT
-        self.next_direction = None
         self.last = None
         occupied_positions.clear()
 
 
-def handle_keys(game_object):
+def handle_keys(snake):
     """Обрабатывает нажатия клавиш для управления игровым объектом."""
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             raise SystemExit
         elif event.type == pg.KEYDOWN:
-            if event.key == pg.K_UP and game_object.direction != DOWN:
-                game_object.next_direction = UP
-            elif event.key == pg.K_DOWN and game_object.direction != UP:
-                game_object.next_direction = DOWN
-            elif event.key == pg.K_LEFT and game_object.direction != RIGHT:
-                game_object.next_direction = LEFT
-            elif event.key == pg.K_RIGHT and game_object.direction != LEFT:
-                game_object.next_direction = RIGHT
+            if event.key == pg.K_UP and snake.direction != DOWN:
+                snake.update_direction(UP)
+            elif event.key == pg.K_DOWN and snake.direction != UP:
+                snake.update_direction(DOWN)
+            elif event.key == pg.K_LEFT and snake.direction != RIGHT:
+                snake.update_direction(LEFT)
+            elif event.key == pg.K_RIGHT and snake.direction != LEFT:
+                snake.update_direction(RIGHT)
 
 
 def draw_grid():
@@ -225,23 +218,23 @@ def draw_world(snake, apple, stones, poisons):
     pg.display.update()
 
 
-def get_uniq_position(game_thing):
+def get_unique_position(game_stuff):
     """Генерирует новую уникальную позицию объектов."""
     valid_position = False
     # Пока не будут найдены свободные значения координат
     while not valid_position:
-        game_thing.randomize_position()
-        if game_thing.position not in occupied_positions:
+        game_stuff.randomize_position()
+        if game_stuff.position not in occupied_positions:
             valid_position = True
-            occupied_positions.append(game_thing.position)
+            occupied_positions.append(game_stuff.position)
 
 
-def create_thing():
+def create_stuff():
     """Создает 1 камень и 1 яд на игровом поле."""
     new_stone = Stone()
-    get_uniq_position(new_stone)
+    get_unique_position(new_stone)
     new_poison = Poison()
-    get_uniq_position(new_poison)
+    get_unique_position(new_poison)
     return [new_stone], [new_poison]
 
 
@@ -250,7 +243,7 @@ def main():
     pg.init()
     apple = Apple()
     snake = Snake()
-    stones, poisons = create_thing()
+    stones, poisons = create_stuff()
 
     while True:
         clock.tick(SPEED)
@@ -264,9 +257,9 @@ def main():
             if apple.position in occupied_positions:
                 occupied_positions.remove(apple.position)
             snake.length += 1
-            get_uniq_position(apple)
+            get_unique_position(apple)
             # Добавляем камень и яд на поле
-            new_stone, new_poison = create_thing()
+            new_stone, new_poison = create_stuff()
             stones.append(new_stone[0])
             poisons.append(new_poison[0])
 
@@ -274,14 +267,14 @@ def main():
         if snake.get_head_position() in snake.positions[2:]:
             snake.reset()
             # Сбрасываем/пересоздаём камни и яды
-            stones, poisons = create_thing()
-            get_uniq_position(apple)
+            stones, poisons = create_stuff()
+            get_unique_position(apple)
 
         # Cтолкновение с камнем
         for stone in stones:
             if snake.get_head_position() == stone.position:
                 snake.reset()
-                stones, poisons = create_thing()
+                stones, poisons = create_stuff()
 
         # Cтолкновение с ядом
         for poison in poisons[:]:
@@ -294,7 +287,7 @@ def main():
                     occupied_positions.remove(poison.position)
                 else:  # Если блоков не осталось - сброс игры
                     snake.reset()
-                    stones, poisons = create_thing()
+                    stones, poisons = create_stuff()
 
         draw_world(snake, apple, stones, poisons)
         # Ведём счёт
