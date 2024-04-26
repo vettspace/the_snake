@@ -278,16 +278,17 @@ def main():
 
         # Cтолкновение с ядом
         for poison in poisons[:]:
-            if snake.get_head_position() == poison.position:
-                if snake.length > 1:  # Если длина больше 1 - удаляем блок
-                    snake.positions.pop()
-                    snake.length -= 1
-                    # Удаления позиции яда из списков (так как съеден)
-                    poisons.remove(poison)
-                    occupied_positions.remove(poison.position)
-                else:  # Если блоков не осталось - сброс игры
-                    snake.reset()
-                    stones, poisons = create_stuff()
+            if snake.get_head_position() != poison.position:
+                continue
+            if snake.length > 1:  # Если длина больше 1 - удаляем блок
+                snake.positions.pop()
+                snake.length -= 1
+                # Удаления позиции яда из списков (так как съеден)
+                poisons.remove(poison)
+                occupied_positions.remove(poison.position)
+            else:  # Если блоков не осталось - сброс игры
+                snake.reset()
+                stones, poisons = create_stuff()
 
         draw_world(snake, apple, stones, poisons)
         # Ведём счёт
