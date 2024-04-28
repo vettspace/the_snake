@@ -73,40 +73,20 @@ class Apple(GameObject):
         self.draw_cell(self.position, self.body_color)
 
 
-class Stone(GameObject):
+class Stone(Apple):
     """Камень на игровом поле."""
 
     def __init__(self):
         super().__init__(body_color=STONE_COLOR)
         self.randomize_position()
 
-    def randomize_position(self):
-        """Устанавливает случайную позицию для камня."""
-        self.position = (
-            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
 
-    def draw(self):
-        """Отрисовывает камень на игровом поле."""
-        self.draw_cell(self.position, self.body_color)
-
-
-class Poison(GameObject):
+class Poison(Apple):
     """Яд на игровом поле."""""
 
     def __init__(self):
         super().__init__(body_color=POISON_COLOR)
         self.randomize_position()
-
-    def randomize_position(self):
-        """Устанавливает случайную позицию для яда."""
-        self.position = (
-            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
-
-    def draw(self):
-        """Отрисовывает яд на игровом поле."""
-        self.draw_cell(self.position, self.body_color)
 
 
 class Snake(GameObject):
