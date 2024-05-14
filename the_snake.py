@@ -82,7 +82,7 @@ class Stone(Apple):
 
 
 class Poison(Apple):
-    """Яд на игровом поле."""""
+    """Яд на игровом поле."""
 
     def __init__(self):
         super().__init__(body_color=POISON_COLOR)
