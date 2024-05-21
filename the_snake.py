@@ -1,4 +1,4 @@
-"""Модуль для генерации случайных позиций объектов."""
+"""Змейка"""
 from random import randint
 from typing import List
 import pygame as pg
@@ -46,7 +46,7 @@ class GameObject:
 
     def draw(self):
         """Отрисовывает объект на игровом поле."""
-        raise NotImplementedError("Метод переопределяется в подклассе.")
+        raise NotImplementedError('Метод переопределяется в подклассе.')
 
     def draw_cell(self, position, body_color):
         """Отрисовывает одну клетку на игровом поле."""
